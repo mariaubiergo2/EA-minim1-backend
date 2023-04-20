@@ -1,8 +1,10 @@
 import { Types } from "mongoose";
 
 import { User } from '../interfaces/user.interface';
+import { Friend } from '../interfaces/friend.interface';
 import UserModel from "../models/user";
 import ChallengeModel from "../models/user";
+import FriendModel from "../models/friend";
 
 const get_Users = async() => {
     const responseItem = await UserModel.find({}).limit(10);
@@ -50,24 +52,33 @@ const update_User = async(idUser: string, data: User) => {
     return responseItem;
 };
 
-const add_Follow = async(idUser: string, idFollowed: string) => {
-    const user = await UserModel.findById({_id: idUser}); //Person who is following
-    const followed = await UserModel.findById({_id: idFollowed}); //Person being followed
-    const responseItem = await UserModel.findByIdAndUpdate({_id: idUser}, 
-        {$addToSet: {following: new Types.ObjectId(followed?.id)}}, {new: true}) 
-        && UserModel.findByIdAndUpdate({_id: idFollowed}, 
-        {$addToSet: {followers: new Types.ObjectId(user?.id)}}, {new: true});
+const add_Friend = async(item: Friend) => {
+    const followed = await UserModel.findById({_id: item.userFollowed}); //Person being followed
+    const newfriend = await UserModel.findById({_id: item.username}); //Person that starts to be friend
+    const friend = await FriendModel.create(item);
+    const responseItem = await UserModel.findByIdAndUpdate({_id: followed?.id}, 
+        {$addToSet: {friends: new Types.ObjectId(friend.id)}}, {new: true});
     return responseItem;
 };
 
-const delete_Follow = async(idUser: string, idFollowed: string) => {
-    const user = await UserModel.findById({_id: idUser}); //Person who is following
-    const followed = await UserModel.findById({_id: idFollowed}); //Person being followed
-    const responseItem = await UserModel.findByIdAndUpdate({_id: idUser}, 
-        {$pull: {following: new Types.ObjectId(followed?.id)}}, {new: true}) 
-        && UserModel.findByIdAndUpdate({_id: idFollowed}, 
-        {$pull: {followers: new Types.ObjectId(user?.id)}}, {new: true});
+const delete_Friend = async(userFollowed: string, idFriend: string) => {
+    const followed = await UserModel.findById({_id: userFollowed}); //Person being followed
+    const friend = await FriendModel.findById({_id: idFriend});
+    const responseItem = await UserModel.findByIdAndUpdate({_id: followed?.id}, 
+        {$pull: {friends: new Types.ObjectId(friend?.id)}}, {new: true});
     return responseItem;
+};
+
+const get_Friends = async(idUser: string) => {
+    const user = await UserModel.findById({_id: idUser}); 
+    const responseItem = user?.friends;
+    return responseItem;
+};
+
+const get_FriendsCount = async(idUser: string) => {
+    const user = await UserModel.findById({_id: idUser}); 
+    const responseItem = user?.friends;
+    return responseItem?.length;
 };
 
 const add_Challenge = async(idUser: string, idChallenger: string) => {
@@ -89,4 +100,4 @@ const delete_User = async(idUser: string) => {
 };
 
 export { get_Users, get_User, get_UserCount, get_UsersProfile, get_UserProfile, log_in, 
-    sign_up, update_User, add_Follow, delete_Follow, add_Challenge, disable_User, delete_User };
+    sign_up, update_User, add_Friend, delete_Friend, add_Challenge, disable_User, delete_User, get_Friends, get_FriendsCount };

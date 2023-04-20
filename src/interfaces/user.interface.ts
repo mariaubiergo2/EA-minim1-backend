@@ -9,8 +9,8 @@ export interface User {
     password: string;
     level: Number; //Level that depends on the experience > In order to level up: exp_actual = 50*next_level + 500 
     exp: Number; //Current user experience > Increases each time a challenge is accomplished
-    followers?: ObjectId[];
-    following?: ObjectId[];
+    friends?: ObjectId[]; //ARA SERAN IDs de FRIENDS
+    //following?: ObjectId[]; ara ja no te sentit
     record?: ObjectId[]; //List of ended challenges
     role: "user" | "admin"; //admin == Has all the permissions 
     active: boolean; //When the user disables his or her account it is set false

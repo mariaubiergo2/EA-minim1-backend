@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { checkAdmin } from "../middleware/session";
-import { getUsers, getUser, getUserCount, getUsersProfile, getUserProfile, login, signup, updateUser, addFollow, deleteFollow, addChallenge, disableUser, deleteUser } from "../controllers/user";
+import { getUsers, getUser, getUserCount, getUsersProfile, getUserProfile, login, signup, updateUser, addFollow, deleteFollow, addChallenge, disableUser, deleteUser, getFriends,getFriendsCount  } from "../controllers/user";
 
 const router = Router();
 
@@ -19,8 +19,11 @@ router.post("/signup", signup); //Lets a user to register a new account
 
 router.post("/update/:idUser", updateUser); //Lets a user to update his or her account details
 
-router.post("/follow/add/:idUser/:idFollowed", addFollow); //Add a user to your following list
-router.post("/follow/delete/:idUser/:idFollowed", deleteFollow); //Remove a user from your following list
+router.post("/follow/add", addFollow); //Add a user to your following list
+router.post("/follow/delete", deleteFollow); //Remove a user from your following list
+router.get("/get/friends/:idUser", getFriends);
+router.get("/get/friends/count/:idUser", getFriendsCount);
+
 
 router.post("/challenges/add/:idUser/:idChallenge", addChallenge); //Adds a challenge to the list of completed challenges that a user has
 

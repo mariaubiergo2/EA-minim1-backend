@@ -36,13 +36,9 @@ const UserSchema = new Schema<User>(
             type: Number,
             required: false,
         },
-        followers: {
+        friends: {
             type: [Schema.Types.ObjectId],
-            ref: 'users',
-        },
-        following: {
-            type: [Schema.Types.ObjectId],
-            ref: 'users',
+            ref: 'friends',
         },
         record: {
             type: [Schema.Types.ObjectId],
